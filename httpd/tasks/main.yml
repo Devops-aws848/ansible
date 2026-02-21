@@ -1,0 +1,22 @@
+---
+- name: Install Apache HTTP Server
+  yum:
+    name: "{{ apache_package_name }}"
+    state: present
+  tags: install
+
+- name: Ensure httpd is started and enabled
+  service:
+    name: httpd
+    state: started
+    enabled: true
+  tags: configure
+
+- name: Copy custom index.html to the web root
+  template:
+    src: index.html  # Path to your local index.html template
+    dest: /var/www/html/index.html  # Destination on the target server
+  notify:
+    - restarting httpd
+  tags: deploy
+
